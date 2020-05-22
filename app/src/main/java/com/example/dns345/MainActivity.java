@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     TextView textResult;
     int nbrCarPerFrame = 0;
     int maxCar = 0;
+    Bundle extras ;
+    String server="";
+
 
 
     public void YOLO(View Button) {
@@ -104,7 +107,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         //find  my  ip
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+
         //========================
+        extras  = getIntent().getExtras();
+        if(extras != null) {
+            server = extras.getString("server");
+        }
+        else{
+            toast("Server IP => NULL");
+        }
+
+
 
         textResult=findViewById(R.id.textResult);
 
@@ -222,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 }
             }
             int ArrayLength = confs.size();
-
+            System.out.println("===============>"+ArrayLength);
             if (ArrayLength>=1) {
                 // Apply non-maximum suppression procedure.
                 float nmsThresh = 0.2f;
@@ -273,7 +286,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     Imgproc.putText(frame,cocoNames.get(idGuy) + " " + intConf + "%",box.tl(),Core.FONT_HERSHEY_SIMPLEX, 2, new Scalar(255,255,0),2);
                     Imgproc.rectangle(frame, box.tl(), box.br(), new Scalar(255, 0, 0), 2);
                 }
-                sendOrNot ("http://192.168.1.22:3000/sendOrNota", nbrCarPerFrame+"");
+                sendOrNot ("http://"+server+":3000/sendOrNot", nbrCarPerFrame+"");
+            }
+            else{
+                sendOrNot ("http://"+server+":3000/sendOrNot", 0+"");
             }
 
         }
@@ -345,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             public void onResponse(String response) {
                 toast(response);
                 if(response.equals("send")){
-                    sendNbrCars ("http://192.168.1.22:3000/sendNbrCars"+"/"+nbr+"/"+ip);
+                    sendNbrCars ("http://"+server+":3000/sendNbrCars"+"/"+nbr+"/"+ip);
                 }
             }
         }, new Response.ErrorListener() {

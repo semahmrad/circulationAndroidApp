@@ -52,8 +52,6 @@ public class SettingActivity extends AppCompatActivity {
         int selectedRadioButton = direction.getCheckedRadioButtonId();
         Butdirection = findViewById(selectedRadioButton);
         valDirection = (String) Butdirection.getText();
-        // valDirection=direction.toString();
-        //************************-*-****
 
         // builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -95,6 +93,7 @@ public class SettingActivity extends AppCompatActivity {
                 if(response.equals("connection successful")){
                     toast("in if");
                     Intent i = new Intent(SettingActivity.this, MainActivity.class);
+                   i.putExtra("server",server.getText().toString());
                     startActivity(i);
                 }
 
